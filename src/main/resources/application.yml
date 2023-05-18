@@ -6,7 +6,7 @@ spring:
       password:  ${MONGO_DB_PASSWORD:javadevs} #your container's credential
       database: ${MONGO_DB_DATABASE:user-account} #mongodb's container database name
       port: ${MONGO_DB_PORT:27017} #container's port in which your mongodb is running
-#      host: ${MONGO_DB_URL:mongodb-service} #your image's name i.e. in my case it is mongodb
+      host: ${MONGO_DB_URL:mongodb-service} #your image's name i.e. in my case it is mongodb
 
 
       
