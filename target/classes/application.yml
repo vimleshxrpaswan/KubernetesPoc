@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+#      username: admin #your container's credential
+#      password:  root #your container's credential
+      database: user-account #mongodb's container database name
+      port: 27017 #container's port in which your mongodb is running
+      host: mongodb #your image's name i.e. in my case it is mongodb
