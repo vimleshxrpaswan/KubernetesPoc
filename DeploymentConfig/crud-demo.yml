@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cruddemo1
+  labels:
+    app: cruddemo1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cruddemo1
+  template:
+    metadata:
+      labels:
+        app: cruddemo1
+    spec:
+      containers:
+        - name: cruddemo1
+          image: vimleshxrp/cruddemo1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: password
+            - name: ME_CONFIG_MONGODB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-configmap
+                  key: db_host
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cruddemo-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: cruddemo1
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30100
