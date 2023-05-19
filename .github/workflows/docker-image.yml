@@ -1,4 +1,4 @@
-name: djangogithubaction
+name: springgithubaction
 
 on:
   push:
