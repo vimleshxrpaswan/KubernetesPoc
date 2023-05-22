@@ -51,4 +51,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           # image tags
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/vimleshxrp/cruddemo
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cruddemo1
