@@ -1,31 +1,54 @@
-name: Docker Image CI
+# Workflow Name
+name: "Java CI with Multi-arch Docker Image"
 
+# Event triggering conditions and branching
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
+# a job
 jobs:
-  build:
+  docker:
+    name: Running Compile Java Multi-arch Docker Image
+    # Based on the ubuntu-latest runtime
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
+      # Setting up the Java environment
+      - uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          # jdk version
+          java-version: '11'
+          # Note, the adopt here is because I need to use this, you can change to other distributions according to your situation
+          distribution: 'adopt'
+          cache: 'maven'
+      - name: Build with Maven
+        # maven build
+        run: mvn -B package -Dmaven.test.skip=true --file pom.xml
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        # Login to the docker repository
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up QEMU
+        # Set up QEMU to support multi-platform builds
+        uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
+        id: buildx
+        uses: docker/setup-buildx-action@v1
       - name: Build and push
-        uses: docker/build-push-action@v3
+        id: docker_build
+        uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./
+          # Dockerfile file location
           file: ./Dockerfile
+          # Supported image architectures, since I need an aarch64 image, so I added arm64 here
+          platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vimleshxrp/cruddemo1
+          # image tags
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/vimleshxrp/cruddemo1
