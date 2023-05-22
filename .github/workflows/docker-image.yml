@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           # jdk version
-          java-version: '20'
+          java-version: '17'
           # Note, the adopt here is because I need to use this, you can change to other distributions according to your situation
           distribution: 'adopt'
           cache: 'maven'
