@@ -1,12 +1,46 @@
+#spring:
+#  data:
+#    mongodb:
+#      authentication-database: ${MONGO_DB_AUTH_DATABASE:admin}
+#      username: ${MONGO_INITDB_ROOT_USERNAME:root} #your container's credential
+#      password: ${MONGO_INITDB_ROOT_PASSWORD:javadevs} #your container's credential
+#      database: ${MONGO_DB_DATABASE:user-account} #mongodb's container database name
+#      port: ${MONGO_DB_PORT:27017}  #container's port in which your mongodb is running
+#      host: ${ME_CONFIG_MONGODB_SERVER:mongodb-service}
 spring:
+  application:
+    name: cruddemo1
   data:
     mongodb:
-      authentication-database: ${MONGO_DB_AUTH_DATABASE:admin}
-      username: ${MONGO_INITDB_ROOT_USERNAME:root} #your container's credential
-      password: ${MONGO_INITDB_ROOT_PASSWORD:javadevs} #your container's credential
-      database: ${MONGO_DB_DATABASE:user-account} #mongodb's container database name
-      port: ${MONGO_DB_PORT:27017}  #container's port in which your mongodb is running
-      host: ${ME_CONFIG_MONGODB_SERVER:mongodb-service}
+      host: ${MONGO_HOST:mongodb-service}
+      database: ${MONGO_DB_DATABASE:user-account}
+      port: {MONGO_DB_PORT:27017}
+      username: ${MONGO_INITDB_ROOT_USERNAME:root}
+      password: ${MONGO_INITDB_ROOT_PASSWORD:javadevs}
+  cloud:
+    kubernetes:
+      discovery:
+        register: true
+      secrets:
+        name: mongo-secret
+
+      config:
+        enabled: true
+        sources:
+          - namespace: default
+            name: mongodb-configmap
+      reload:
+        enabled: true
+        mode: polling
+        period: 1000
+management:
+  endpoint:
+    restart:
+      enabled: true
+    health:
+      enabled: true
+    info:
+      enabled: true
 
 
       
